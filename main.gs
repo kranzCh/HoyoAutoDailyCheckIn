@@ -1,15 +1,14 @@
-const GIUrl =
-  "https://sg-hk4e-api.hoyolab.com/event/sol/sign?lang=en-us&act_id=e202102251931481";
-const HSRUrl =
-  "https://sg-public-api.hoyolab.com/event/luna/os/sign?lang=en-us&act_id=e202303301540311";
-const BH3Url =
-  "https://sg-public-api.hoyolab.com/event/mani/sign?lang=en-us&act_id=e202110291205111";
+const GIUrl = "https://sg-hk4e-api.hoyolab.com/event/sol/sign?lang=en-us&act_id=e202102251931481";
+const HSRUrl = "https://sg-public-api.hoyolab.com/event/luna/os/sign?lang=en-us&act_id=e202303301540311";
+const BH3Url = "https://sg-public-api.hoyolab.com/event/mani/sign?lang=en-us&act_id=e202110291205111";
+const ZZZUrl = "https://sg-act-nap-api.hoyolab.com/event/luna/zzz/os/sign?lang=en-us&act_id=e202406031448091";
 
 const tokenList = [
   {
     GI: true,
     HSR: true,
     BH3: false,
+    ZZZ: true,
     token: "HOYOLAB_COOKIE_TOKEN",
   },
 ];
@@ -41,6 +40,13 @@ function main() {
         errorList.push(`ACCOUNT ${i} BH3 CHECK IN FAILED`);
       }
     }
+    // ZZZ Check-in
+    if (tokenList[i].ZZZ) {
+      if (!checkIn("ZZZ", tokenList[i])) {
+        hasError = true;
+        errorList.push(`ACCOUNT ${i} ZZZ CHECK IN FAILED`);
+      }
+    }
   }
 
   // check and throw error after check-in if has error occur
@@ -62,6 +68,9 @@ function checkIn(title, token) {
       break;
     case "BH3":
       url = BH3Url;
+      break;
+    case "ZZZ":
+      url = ZZZUrl;
       break;
     default:
       return false;
@@ -86,10 +95,10 @@ function checkIn(title, token) {
     // "retcode":0 means check-in successed
     (!response.getContentText().includes(`"retcode":0`) &&
       // "retcode":-5003 means already check-in
-    !response.getContentText().includes(`"retcode":-5003`)) 
+      !response.getContentText().includes(`"retcode":-5003`)) ||
     // "is_risk":true means hoyolab send challenge when checking-in,
     // if the script encounters a check-in failure, you may need to reset the cookie in hoyolab.
-    || response.getContentText().includes(`"success":1,"is_risk":true`)
+    response.getContentText().includes(`"success":1,"is_risk":true`)
   ) {
     return false;
   }
