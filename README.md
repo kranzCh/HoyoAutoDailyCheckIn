@@ -1,6 +1,6 @@
 # HoyoAutoDailyCheckIn
 
-Google App Script functions for Auto-check-in on HoyoLab (Genshin Impact, Honkai Star Rail and Honkai Impact 3rd).
+Google App Script functions for Auto-check-in on HoyoLab (Genshin Impact, Honkai Star Rail, Honkai Impact 3rd ans Zenless Zone Zero).
 
 ### Multiple Accounts
 
@@ -12,12 +12,14 @@ const tokenList = [
     GI: true,
     HSR: true,
     BH3: false,
+    ZZZ: true,
     token: "HOYOLAB_COOKIE_TOKEN_1",
   },
   {
     GI: false,
     HSR: false,
-    BH3: true,
+    BH3: false,
+    ZZZ: true,
     token: "HOYOLAB_COOKIE_TOKEN_2",
   },
   //.. another account object
