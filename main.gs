@@ -1,7 +1,7 @@
 const GIUrl = "https://sg-hk4e-api.hoyolab.com/event/sol/sign?lang=en-us&act_id=e202102251931481";
 const HSRUrl = "https://sg-public-api.hoyolab.com/event/luna/os/sign?lang=en-us&act_id=e202303301540311";
 const BH3Url = "https://sg-public-api.hoyolab.com/event/mani/sign?lang=en-us&act_id=e202110291205111";
-const ZZZUrl = "https://sg-act-nap-api.hoyolab.com/event/luna/zzz/os/sign?lang=en-us&act_id=e202406031448091";
+const ZZZUrl = "https://sg-public-api.hoyolab.com/event/luna/zzz/os/sign?lang=en-us&act_id=e202406031448091";
 
 const tokenList = [
   {
