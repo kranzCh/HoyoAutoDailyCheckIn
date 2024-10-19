@@ -21,28 +21,28 @@ function main() {
   for (let i = 0; i < tokenList.length; i++) {
     // GI Check-in
     if (tokenList[i].GI) {
-      if (!checkIn("GI", tokenList[i])) {
+      if (!checkIn("GI", tokenList[i].token)) {
         hasError = true;
         errorList.push(`ACCOUNT ${i} GI CHECK IN FAILED`);
       }
     }
     // HSR Check-in
     if (tokenList[i].HSR) {
-      if (!checkIn("HSR", tokenList[i])) {
+      if (!checkIn("HSR", tokenList[i].token)) {
         hasError = true;
         errorList.push(`ACCOUNT ${i} HSR CHECK IN FAILED`);
       }
     }
     // BH3 Check-in
     if (tokenList[i].BH3) {
-      if (!checkIn("BH3", tokenList[i])) {
+      if (!checkIn("BH3", tokenList[i].token)) {
         hasError = true;
         errorList.push(`ACCOUNT ${i} BH3 CHECK IN FAILED`);
       }
     }
     // ZZZ Check-in
     if (tokenList[i].ZZZ) {
-      if (!checkIn("ZZZ", tokenList[i])) {
+      if (!checkIn("ZZZ", tokenList[i].token)) {
         hasError = true;
         errorList.push(`ACCOUNT ${i} ZZZ CHECK IN FAILED`);
       }
@@ -87,21 +87,23 @@ function checkIn(title, token) {
     headers: headers,
   };
 
+  // acceptable status code set
+  const acceptSet = new Set([0, -5003]);
+
   // get response
   const response = UrlFetchApp.fetch(url, options);
   Logger.log(response.getContentText());
 
-  if (
-    // "retcode":0 means check-in successed
-    (!response.getContentText().includes(`"retcode":0`) &&
-      // "retcode":-5003 means already check-in
-      !response.getContentText().includes(`"retcode":-5003`)) ||
-    // "is_risk":true means hoyolab send challenge when checking-in,
-    // if the script encounters a check-in failure, you may need to reset the cookie in hoyolab.
-    response.getContentText().includes(`"success":1,"is_risk":true`)
-  ) {
+  const responseData = JSON.parse(response.getContentText());
+  if (acceptSet.has(responseData.statusCode)) {
+    // Check-in failed for an unexpected reason.
+    Logger.log(`Check-in failed with response: ${JSON.stringify(responseData)}`);
     return false;
   }
-  Logger.log(`${title} CHECK IN OK`);
+  if (responseData.data && responseData.data.is_risk === true) {
+    // Hoyolab is sending a challenge, handle this case separately if needed.
+    Logger.log(`Check-in triggered a challenge: ${JSON.stringify(responseData)}`);
+  }
+  // Check-in successful or event expired/already checked in.
   return true;
 }
